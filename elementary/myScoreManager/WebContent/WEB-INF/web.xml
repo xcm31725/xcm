@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <servlet>
+		<servlet-name>registerUser</servlet-name>
+		<servlet-class>com.lanou.action.RegisterAction</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>registerUser</servlet-name>
+		<url-pattern>/registerAction</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>CheckLogin</servlet-name>
+		<servlet-class>com.lanou.action.LoginAction</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CheckLogin</servlet-name>
+		<url-pattern>/CheckLogin</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>AddStudent</servlet-name>
+		<servlet-class>com.lanou.action.AddStudentAction</servlet-class>
+	</servlet>    
+	<servlet-mapping>
+		<servlet-name>AddStudent</servlet-name>
+		<url-pattern>/AddStudentAction</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet>
+		<servlet-name>changeStudent</servlet-name>
+		<servlet-class>com.lanou.action.ChangeStudentAction</servlet-class>
+	</servlet>    
+	<servlet-mapping>
+		<servlet-name>changeStudent</servlet-name>
+		<url-pattern>/ChangeStudentAction</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>deleteStudent</servlet-name>
+		<servlet-class>com.lanou.action.DeleteStudentAction</servlet-class>
+	</servlet>    
+	<servlet-mapping>
+		<servlet-name>deleteStudent</servlet-name>
+		<url-pattern>/deleteServlet</url-pattern>
+	</servlet-mapping>
+	
+	
+	
+</web-app>
