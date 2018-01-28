@@ -1,0 +1,6 @@
+#Hello!
+#Mon Jan 22 12:04:40 CST 2018
+kaj=18
+cmj=18
+txj=18
+zcj=18

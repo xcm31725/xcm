@@ -1,0 +1,5 @@
+-- listing properties --
+zc=17
+xcm=18
+sd=22
+xgd=23

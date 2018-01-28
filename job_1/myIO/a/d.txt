@@ -1,0 +1,5 @@
+-- listing properties --
+kaj=18
+cmj=18
+zcj=18
+txj=18
