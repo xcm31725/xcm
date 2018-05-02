@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 目标target -->
+	<bean id="orderService" class="cn.itcast.aop.OrderServiceImpl"></bean>
+	<!-- 通知advice -->
+	<bean id="orderServiceAdvice" class="cn.itcast.aop.OrderServiceHelper"></bean>
+	<!-- 定义切点 pointcut -->
+	<!-- <bean id="orderServicePointCut" class="org.springframework.aop.support.NameMatchMethodPointcut">
+		<property name="mappedNames">
+			<list>
+				<value>add</value>
+				<value>update</value>
+			</list>
+		</property>
+	</bean>	 -->
+	<bean id="orderServicePointCut" class="org.springframework.aop.support.JdkRegexpMethodPointcut">
+		<property name="pattern" value=".*Order"></property>
+	</bean>
+	<!-- 切面aspect=pointcut+advice -->
+	<bean id="orderServiceAspect" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+		<property name="advice" ref="orderServiceAdvice"/>
+		<property name="pointcut" ref="orderServicePointCut"/>		
+	</bean>	
+	<!-- 代理 proxy -->
+	<bean id="orderServiceProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="orderService"/>
+		<property name="interceptorNames" value="orderServiceAspect"/>
+		<property name="proxyInterfaces" value="cn.itcast.aop.IOrderService"/>
+	</bean>
+</beans> 
+	
+

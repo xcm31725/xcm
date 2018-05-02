@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant><!-- 解决post中的中文乱码问题 -->
+	<!-- <constant name="sttuts.action.extention" value="action"></constant>  
+	<constant name="struts.devMode" value="true"></constant> -->
+	
+	<package name="default" namespace="/" extends="struts-default">
+		<global-results>
+			<result name="success">/success.jsp</result>
+		</global-results>
+		
+		<action name="struts2" class="cn.itcast.web.action.Struts2Action" method="show"></action>
+		
+		<action name="login" class="cn.itcast.web.action.LoginAction" method="login">
+			<result name="success">/success.jsp</result>
+			<result name="failer">/failer.jsp</result>
+		</action>
+		
+		<action name="login1" class="cn.itcast.web.action.LoginAction1" method="login">
+			<result name="success">/success.jsp</result>
+			<result name="failer">/failer.jsp</result>
+		</action>
+		
+		<action name="login2" class="cn.itcast.web.action.LoginAction2" method="login">
+			<result name="success">/success.jsp</result>
+			<result name="failer">/failer.jsp</result>
+		</action>
+		
+		<action name="login4"></action>
+		
+		<action name="book_*" class="cn.itcast.web.action.BookAction" method="{1}"></action>
+		
+		<action name="*_*" class="cn.itcast.web.action.{1}Action" method="{2}"></action>
+	</package>
+</struts>

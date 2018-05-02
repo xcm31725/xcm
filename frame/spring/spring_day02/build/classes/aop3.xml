@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	 xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		 http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+	<!-- 目标target -->
+	<bean id="userService" class="cn.itcast.aspcetj.UserServiceImpl"></bean>
+	<!-- 通知advice -->
+	<bean id="userServiceAdvice" class="cn.itcast.aspcetj.UserServiceHelper"></bean>
+	
+	
+	<!-- 使用aop:config来声明 使用aop:aspect来配置切面 -->
+	<aop:config proxy-target-class="true">
+		<aop:aspect ref="userServiceAdvice">
+			<aop:pointcut expression="execution(* *.del(..))" id="addPointcut"/>
+			<!-- 前置通知 -->
+			<aop:before method="before" pointcut-ref="addPointcut"/>
+			<aop:before method="before1" pointcut-ref="addPointcut"/>
+			<!-- 后置通知 -->
+			<aop:after-returning method="afterReturning" pointcut-ref="addPointcut" returning="val"/>
+			<!-- 环绕通知 -->
+			<aop:around method="around" pointcut-ref="addPointcut" />
+			<!-- 异常抛出通知 -->
+			<aop:after-throwing method="afterThrowing" pointcut-ref="addPointcut" throwing="ex" />
+			<!-- 最终通知 -->
+			<aop:after method="after" pointcut-ref="addPointcut" />
+		</aop:aspect>
+	</aop:config>
+	
+	
+		
+	
+	
+</beans> 
+	
+

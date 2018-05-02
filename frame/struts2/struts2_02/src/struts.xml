@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<package name="default" namespace="/" extends="struts-default">
+		<interceptors> 
+			<interceptor name="myInterceptor" class="cn.itcast.utils.MyInterceptor">
+				<param name="includeMethods">showProduct</param><!-- 这是包含的方法   可以写多个中间用,号隔开 -->
+				<!-- <param name="excludeMethods">addProduct</param> 这是不包含的  -->
+			</interceptor>
+			<interceptor-stack name="myStack">
+				<interceptor-ref name="myInterceptor"/>
+				<interceptor-ref name="defaultStack"></interceptor-ref>
+			</interceptor-stack>
+		
+		</interceptors>
+		
+		
+		<action name="login" class="cn.itcast.web.action.LoginAction" method="login">
+			<result name="success">/success.jsp</result>
+			<result name="failer">/login.jsp</result>
+		</action>
+		
+		<action name="vs" class="cn.itcast.web.action.ValueStackAction">
+			<result name="success" type="redirect">/ognl2.jsp?username=${model.username}</result>
+		</action>	
+		
+		<action name="product_*" class="cn.itcast.web.action.ProductAction" method="{1}">
+			<result name="success">/product.jsp</result>
+			<result name="login">/login.jsp</result>
+			<interceptor-ref name="myStack"></interceptor-ref>
+		</action>
+		
+	</package>
+</struts>

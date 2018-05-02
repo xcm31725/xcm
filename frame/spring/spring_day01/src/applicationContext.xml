@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- <bean id="userService" class="cn.itcast.ioc.UserServiceImpl">
+		<property name="info" value="ITCAST"></property>
+	</bean>
+
+	<bean name="bean" class="cn.itcast.bean.Bean1">
+	
+	</bean>
+	
+	<bean name="bean1" class="cn.itcast.bean.Bean2"></bean>
+
+	<bean name="bean2" class="cn.itcast.bean.BeanFactory" factory-method="createBean2"></bean>
+
+	<bean name="Bean2Factory" class="cn.itcast.bean.Bean2Factory"></bean>
+	<bean name="bean3"  factory-bean="Bean2Factory" factory-method="createBean3"></bean> -->
+	
+	<bean name="car" class="cn.itcast.di.Car">
+		<constructor-arg index="0" type="java.lang.String" value="宝马"></constructor-arg>
+		<constructor-arg index="1" type="double" value="100000.0"></constructor-arg>
+	</bean>
+	
+	<bean name="car1" class="cn.itcast.di.Car">
+		<property name="name" value="奔驰" />
+		<property name="price" value="200000" />
+	</bean>
+	
+	<bean name="person" class="cn.itcast.di.Person">
+		<property name="name" value="XCM"></property>
+		<property name="Car" ref="car1"></property>
+	</bean>
+	
+	<bean name="coll" class="cn.itcast.di.CollectionDemo">
+		<property name="list">
+			<list>
+				<value>XCM</value>
+				<value>10</value>
+				<ref bean="car"/>
+			</list>
+		</property>
+		
+		<property name="set">
+			<set>
+				<value>22</value>
+				<value>XGD</value>
+				<ref bean="person"/>
+			</set>
+		</property>
+		
+		<property name="map">
+			<map>
+				<entry key="username" value="XCM"></entry>
+				<entry key-ref="person" value-ref="car"></entry>
+			</map>
+		</property>
+		
+		<property name="pro">
+			<props>
+				<prop key="commpany">IT</prop>
+				<prop key="price">1000</prop>
+			</props>
+		</property>
+	</bean>
+</beans>
+
+
+
+
+
+
+
+
+

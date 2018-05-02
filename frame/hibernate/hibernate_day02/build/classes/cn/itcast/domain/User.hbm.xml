@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+	<class name="cn.itcast.domain.User" table="t_user" catalog="hibernateTest">
+		<id name="id" column="id">
+			<generator class="identity"></generator>
+		</id>
+		
+		<property name="name" column="name" length="20"></property>
+		
+		<set name="set" inverse="true" cascade="delete-orphan">
+			<key column="uid"></key>
+			<one-to-many class="cn.itcast.domain.Order"></one-to-many>
+		</set>
+		<!-- <set name="set" cascade="save-update">
+			<key column="uid"></key>
+			<one-to-many class="cn.itcast.domain.Order" ></one-to-many>
+		</set> -->
+		
+	</class>
+</hibernate-mapping>

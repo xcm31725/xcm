@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<constant name="struts.devModel" value="true"></constant>
+	<constant name="struts.multipart.maxSize" value="2097152000"></constant>
+	
+	<package name="default" namespace="/" extends="struts-default">
+		
+		<action name="up" class="cn.itcast.action.UploadAction" method="uploadFile">
+			<result name="input">/error.jsp</result>
+			
+			<interceptor-ref name="fileUpload">
+				<!-- <param name="maximumSize"></param> --><!-- 设置每个action允许上传文件的大小 -->
+				<!-- <param name="allowedTypesSet"></param> --><!-- 设置上传mimeType文件的类型 -->
+				<param name="allowedExtensionsSet">txt,jpg</param><!-- 设置文件的上传的后缀名多个用，好隔开 -->
+			</interceptor-ref>
+			<interceptor-ref name="defaultStack" />
+		</action>
+		
+		<action name="upMany" class="cn.itcast.action.UploadManyAction" method="uploadFile">
+			<result name="input">/error.jsp</result>
+			
+		</action>
+	</package>
+</struts>

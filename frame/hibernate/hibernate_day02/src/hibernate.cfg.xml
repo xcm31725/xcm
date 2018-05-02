@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+	"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+	"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<!-- 配置关于数据库链接四个项Dress.class, url, username, password -->
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
+		<property name="hibernate.connection.url">jdbc:mysql:///hibernateTest</property>
+		<property name="hibernate.connection.username">root</property>
+		<property name="hibernate.connection.password">root</property>
+		
+		<!-- 设置链接提供者 -->
+		<property name="hibernate.connection.provider_class">org.hibernate.connection.C3P0ConnectionProvider</property>
+		
+		<property name="hibernate.c3p0.max_size">10</property><!-- 最大链接数 -->
+		<property name="hibernate.c3p0.min_size">3</property><!-- 最小链接数 -->
+		<property name="hibernate.c3p0.timeout">100</property><!-- 超时（秒）！ -->
+		<property name="hibernate.c3p0.idle_test_period">2000</property><!-- 空闲链接（秒） -->
+		
+		<!-- 可以向数据库发送的sql显示出来 -->
+		<property name="hibernate.show_sql">true</property>
+		<!-- 格式化sql -->
+		<property name="hibernate.format_sql">true</property>
+		<!-- hibernate的方言 -->
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
+		
+		<!-- 自动创建表 -->
+		<property name="hibernate.hbm2ddl.auto">update</property>
+		
+		
+		<!-- 自动提交 -->
+		<property name="hibernate.connection.autocommit">true</property>
+		
+		<!-- 配置hibernate映射文件的位置 -->
+		<mapping resource="cn/itcast/domain/User.hbm.xml"/>
+		<mapping resource="cn/itcast/domain/Order.hbm.xml"/>
+	</session-factory>
+</hibernate-configuration>
