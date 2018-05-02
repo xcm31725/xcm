@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>省事联动(jQuery应用案例)</title>
+		<script type="text/javascript" src="../../js/jquery-1.8.3.min.js"></script>
+		<script>
+			//初始化省对应的数据
+			//省份的value就是这组数据中城市数据的索引
+			var citys = [
+				['西安', '咸阳', '宝鸡', '渭南', '汉中', '安康', '铜川', '商洛', '延安', '榆林', '杨凌示范区'],
+				['大同', '太原', '阳泉', '晋城', '长治', '朔州', '运城', '临汾', '晋中', '吕梁', '忻州 '],
+				['郑州', '洛阳', '南阳', '许昌', '周口', '平顶山', '三门峡', '济源', '商丘', '鹤壁'],
+				['石家庄', '唐山', '秦皇岛', '邯郸', '邢台', '保定', '张家口', '承德', '沧州', '廊坊', '衡水']
+			];
+			
+			$(function(){
+				//文档加载就绪后，给省下拉框添加change事件
+				$("#province").change(function(){
+					//清除城市下拉框数据，保留请选项即可
+					$("#city option:gt(0)").remove();
+					//获取选择的省份ID
+					var pid = $(this).val();
+					//根据省份选择数据添加城市数据
+					if($.trim(pid) != ""){
+						var datas = citys[pid];
+						for (var i = 0; i < datas.length; i++) {
+							//创建option
+							var optionEl = $("<option>"+datas[i]+"</option>");
+							//添加到城市下拉框
+							$("#city").append(optionEl);
+						}
+					}
+				});
+			});
+			
+		</script>
+	</head>
+
+	<body>
+		省：
+		<select id="province">
+			<option value="" selected="selected">-请选择-</option>
+			<option value="0">陕西省</option>
+			<option value="1">山西省</option>
+			<option value="2">河南省</option>
+			<option value="3">河北省</option>
+		</select>
+		市：
+		<select id="city">
+			<option value="">-请选择-</option>
+		</select>
+	</body>
+
+</html>

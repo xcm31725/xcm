@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<h1>request接收请求参数</h1>
+<form action="/web02/RequestTest1" method="get">
+	用户名：<input type="text" name="username" value="xcm" /><br/>
+	密码：<input type="password" name="password" value="317" /><br/>
+	性别：<input type="radio" name="sex" value="man" />男 <input type="radio" name="sex" value="woman" />女<br/>
+	籍贯：<select name="city">
+			<option value="xian">西安</option>	
+			<option value="weinan">渭南</option>	
+			<option value="xianyang">咸阳</option>	
+	</select><br/>
+	爱好:<input type="checkbox" name="hobby" value="basketball" />篮球
+	<input type="checkbox" name="hobby" value="football" />足球
+	<input type="checkbox" name="hobby" value="volleyball" />排球<br/>
+	自我介绍：<textarea rows="3" cols="8" name="info"></textarea><br/>
+	<input type="submit" value="提交" />
+</form>
+</body>
+</html>
