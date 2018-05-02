@@ -1,0 +1,100 @@
+--创建表空间
+CREATE tablespace waterboss
+datafile 'c:\waterboss.dbf'
+size 100m
+autoextend on
+next 10m
+
+--创建用户
+create user wateruser
+identified by admin
+default tablespace waterboss
+
+--用户权限
+grant dba to wateruser
+
+select userenv('language') from dual
+--创建业主表
+create table t_owners(
+       id number primary key,
+       name varchar2(30),
+       addressid number,
+       housenumber varchar2(30),
+       watermeter varchar2(30),
+       adddate date,
+       ownertypeid number       
+);
+
+--业主表
+create table T_OWNERTYPE(
+       id number primary key,
+       name varchar2(30)
+);
+
+--价格表
+create table T_PRICETABLE(
+       id number primary key,
+       price number(10,2),
+       ownertypeid number,
+       minnum number(10,2),
+       maxnum number(10,2)    
+);
+
+--区域表
+create table T_AREA(
+     id number primary key,
+     name varchar2(30)  
+);
+
+--收费员表
+create table T_OPERATOR(
+     id number primary key,
+     name varchar2(30)  
+);
+
+--地址表
+create table T_ADDRESS(
+     id number primary key,
+     name varchar2(30),  
+     areaid number,
+     operatorid number
+);
+
+--收费台账
+create table T_ACCOUNT(
+     id number primary key,
+     ownerid number,
+     ownertyeid number,
+     areaid number,
+     year char(4),
+     month char(2),
+     num0 number,
+     num1 number,
+     usenum number,
+     meteruserid number,
+     meterdate date,
+     money number(10,2),
+     isfee char(1),
+     feedate date,
+     feeuserid number
+);
+
+--给业主表添加两个字段
+alter table t_owners add(
+      remapk varchar2(20),
+      outdate date
+)
+--修改字段类型
+alter table t_owners modify(
+      remapk char(20),
+      outdate timestamp
+)
+
+--修改字段名
+alter table t_owners rename column outdate to exitdate
+
+--删除字段名
+alter table t_owners drop column remapk
+
+--删除表
+drop table t_owners

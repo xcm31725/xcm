@@ -1,0 +1,205 @@
+--创建视图
+create or replace view view_ownersl as
+select * from t_owners where ownertypeid=1
+--利用视图查询
+select * from view_ownersl
+update view_ownersl set name='王刚' where id=2
+
+--带查询约束的视图
+--根据地址表（T_ADDRESS）创建视图 VIEW_ADDRESS2 ,内容为区域 ID
+create or replace view view_address2 as 
+select * from t_address where areaid=2
+with check option 
+
+update view_address2 set areaid=1 where id=4
+--创建只读视图
+create or replace view view_owners1 as 
+select * from t_owners where ownertypeid=1
+with read only
+
+--创建带错误的视图
+create or replace view view_temp as
+select * from t_temp--错误的写法
+create or replace force view view_temp as
+select * from t_temp
+
+--创建视图，查询显示业主编号，业主名称，业主类型名称
+create or replace view view_owners as 
+select o.id 业主编号, o.name 业主名称, ot.name 业主类型
+from t_owners o,t_ownertype ot
+where o.ownertypeid=ot.id
+
+select * from view_owners
+
+update view_owners set 业主名称='范小兵' where 业主编号='1'
+
+update view_owners set 业主类型='普通居民' where 业主编号='1'--不属于键保留列
+
+--分组聚合统计查询的例子
+--创建视图，按年月统计水费金额
+create view view_accountsum as
+select year,month,sum(money) moneysum
+from t_account
+group by year,month
+order by year,month
+
+--物化视图
+--创建手动刷新的物化视图
+--查询地址 ID,地址名称和所属区域名称
+create materialized view mv_address
+as select ad.id,ad.name adname,ar.name ar_name
+from t_address ad,t_area ar
+where ad.areaid=ar.id 
+
+select * from mv_address
+
+insert into t_address values(8,'宏福苑小区',1,1)
+
+begin 
+dbms_mview.refresh('mv_address','c');
+end;
+
+--创建自动刷新的物化视图
+create materialized view mv_address2
+refresh
+on commit
+as
+select ad.id,ad.name adname,ar.name ar_name
+from t_address ad,t_area ar
+where ad.areaid=ar.id
+
+insert into t_address values(9,'中心苑小区',1,1)
+
+--创建是不生成数据的物化视图
+create materialized view mv_address3
+build deferred
+refresh
+on commit
+as 
+select ad.id,ad.name adname,ar.name ar_name
+from t_address ad,t_area ar
+where ad.areaid=ar.id
+
+select * from mv_address3
+
+begin 
+dbms_mview.refresh('mv_address3','c');
+end;
+
+--创建增量刷新的物化视图
+create materialized view log on t_address with rowid;
+create materialized view log on t_area with rowid
+--创建物化视图
+create materialized view mv_address4
+refresh fast
+as 
+select ad.rowid addrowid ,ar.rowid arrowid,ad.id,ad.name adanme,ar.name ar_name
+from t_address ad,t_area ar
+where ad.areaid=ar.id
+
+insert into t_address values(10,'枣园苑小区',1,1)
+
+begin 
+dbms_mview.refresh('mv_address4','c');
+end;
+
+
+--序列
+--创建与使用简单序列
+create sequence seq_test
+
+--查询序列的下一个值
+select seq_test.nextval from dual
+--查询序列的当前值
+select seq_test.currval from dual
+
+--有最大值的非循环序列
+create sequence seq_test1
+maxvalue 20;
+
+select seq_test1.nextval from dual
+
+create sequence seq_test2
+increment by 10
+start with 10
+maxvalue 100
+
+select seq_test2.nextval from dual
+
+create sequence seq_test3
+increment by 10
+start with 10
+minvalue 5
+maxvalue 100
+
+select seq_test3.nextval from dual;
+
+--循环的序列
+create sequence seq_test4
+increment by 10
+start with 10
+maxvalue 210
+cycle
+
+select seq_test4.nextval from dual
+
+create sequence seq_test5
+increment by 10
+start with 10
+minvalue 10
+maxvalue 100
+cache 20
+
+select seq_test5.nextval from dual
+
+--删除序列
+drop sequence seq_test1
+
+--创建私有同义词
+create synonym owner for t_owners
+
+select * from owner
+
+--创建共有的同义词
+create public synonym owner2 for t_owners
+select * from owner2 
+
+--普通索引
+create index index_owners_name on t_owners(name)
+
+select * from t_owners where name='张哲'
+--创建一个两个字段的表
+create table T_INDEXTEST (
+ID NUMBER,
+NAME VARCHAR2(30)
+);
+--向表中插入1000万条记录
+begin
+for i in 1..10000000
+loop
+insert into t_indextest values(i,'AA'||i);
+end loop;
+commit;
+end;
+
+--创建索引
+create index index_test on t_indextest(name)
+
+select * from t_indextest where id=7654321
+
+select rowid,t.* from t_indextest t where name='AA7654321'
+
+select * from t_indextest where rowid='AAAM3YAAGAAAFgGAB4'
+
+--创建唯一索引
+create unique index index_owners_meter on t_owners(watermeter)
+
+select * from t_owners where addressid=1 and housenumber='1-3'
+
+--创建符合索引
+create index index_owners_ah on t_owners(addressid,housenumber)
+
+--创建位图索引
+create bitmap index index_owners_typeid on t_owners(ownertypeid)
+
+

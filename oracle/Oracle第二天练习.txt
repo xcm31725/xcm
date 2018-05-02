@@ -1,0 +1,319 @@
+=====================基础查询练习==============================
+--1.查询水表编号为30408的业主记录
+select * from t_owners where watermeter=30408
+--2.查询业主名称包含“刘”的业主记录
+select * from t_owners where name like '%刘%'
+--3.查询业主名称包含“刘”的并且门牌号包含5的业主记录
+select * from t_owners where name like '%刘%' and housenumber like '%5%'
+--4.查询业主名称包含“刘”的或者门牌号包含5的业主记录
+select * from t_owners where name like '%刘%' or housenumber like '%5%'
+--5.查询业主名称包含“刘”的或者门牌号包含5的业主记录，并且地址编号为3的记录
+select * from t_owners where (name like '%刘%' or housenumber like '%5%') and addressid=3
+--6.查询台账记录中用水字数大于等于10000，并且小于等于20000的记录
+select * from t_account where usenum>=10000 and usenum<=20000 
+select * from t_account where usenum between 10000 and 20000 
+--7.查询T_PRICETABLE表中MAXNUM 为空的记录
+select * from t_pricetable where maxnum is null
+--8.查询T_PRICETABLE表中MAXNUM 不为空的记录
+select * from t_pricetable where maxnum is not null
+--9.查询业主表中的地址ID,不重复显示
+select distinct addressid from t_owners 
+--10.对T_ACCOUNT表按使用量进行升序排序
+select * from t_account order by usenum
+--11.对T_ACCOUNT表按使用量进行降序排序
+select * from t_account order by usenum desc
+--12.统计2012年所有用户的用水量总和 
+select sum(usenum) from t_account where year='2012'
+--13.统计2012年所有用水量（字数）的平均值 
+select avg(usenum) from t_account where year='2012'
+--14.统计2012年最高用水量（字数） 
+select max(usenum) from t_account where year='2012'
+--15.统计2012年最低用水量（字数） 
+select min(usenum) from t_account where year='2012'
+--16.统计业主类型ID为1的业主数量
+select count(*) from t_owners where ownertypeid=1
+--17.按区域分组统计水费合计数
+select areaid,sum(money) from t_account group by areaid 
+--18.查询水费合计大于169000的区域及水费合计
+select areaid,sum(money) from t_account group by areaid having sum(money)>169000
+--19.查询显示业主编号，业主名称，业主类型名称
+select ow.id 业主编号,ow.name 业主名称,ot.name 业主类型名称
+from t_owners ow,t_ownertype ot
+where ow.ownertypeid=ot.id
+--20.查询显示业主编号，业主名称、地址和业主类型
+select o.id 业主编号,o.name 业主名称,a.name 地址,ot.name 业主类型 
+from t_owners o,t_address a,t_ownertype ot
+where o.addressid=a.id and o.ownertypeid=ot.id
+--21.查询显示业主编号、业主名称、地址、所属区域、业主分类
+select o.id 业主编号,o.name 业主名称,a.name 地址,ar.name 所属区域,ot.name 业主分类
+from t_owners o,t_address a,t_ownertype ot,t_area ar
+where o.ownertypeid=ot.id and o.addressid=a.id and a.areaid=ar.id
+--22.查询显示业主编号、业主名称、地址、所属区域、收费员、业主分类
+select o.id 业主编号,o.name 业主名称,a.name 地址,ar.name 所属区域,op.name 收费员,ot.name 业务分类
+from t_owners o,t_address a,t_ownertype ot,t_area ar,t_operator op
+where o.ownertypeid=ot.id and o.addressid=a.id and a.areaid=ar.id and a.operatorid=op.id
+--23.查询业主的账务记录，显示业主编号、名称、年、月、金额。如果此业主没有账务记录也要列出姓名
+select o.id,o.name,a.year,a.month,a.money
+from  t_owners o left join t_account a
+on o.id=a.owneruuid
+--oracle语法左外链接
+select o.id,o.name,a.year,a.month,a.money
+from  t_owners o, t_account a
+where o.id=a.owneruuid(+)
+--24.查询业主的账务记录，显示业主编号、名称、年、月、金额。如果账务记录没有对应的业主信息，也要列出记录
+select o.id,o.name,a.year,a.month,a.money
+from  t_owners o right join t_account a
+on o.id=a.owneruuid
+--oracle语法右外链接
+select o.id,o.name,a.year,a.month,a.money
+from  t_owners o, t_account a
+where o.id(+)=a.owneruuid
+--25.查询2012年1月用水量大于平均值的台账记录
+select avg(usenum) from t_account where year='2012' and month='01'
+
+select * from t_account where year='2012' and month='01' and usenum>
+(select avg(usenum) from t_account where year='2012' and month='01') 
+--26.查询地址编号为1 、3、4 的业主记录
+select * from t_owners where addressid in (1,3,4)
+--27.查询地址含有“花园”的业主的信息
+select * from t_owners where addressid 
+in(select id from t_address where name like '%花园%')
+--28.查询地址不含有“花园”的业主的信息
+select * from t_owners where addressid 
+not in(select id from t_address where name like '%花园%')
+--29.查询显示业主编号，业主名称，业主类型名称，条件为业主类型为”居民”，使用子查询实现
+select * from (
+       select o.id 业主编号,o.name 业主名称,ot.name 业主类型
+       from t_owners o,t_ownertype ot
+       where o.ownertypeid=ot.id
+)where 业主类型='居民'
+--30.列出业主信息，包括ID，名称，所属地址
+select id,name,(select name from t_address where id=addressid) addressname
+from t_owners 
+--31.列出业主信息，包括ID，名称，所属地址，所属区域
+select id,name,
+(select name from t_address where id=addressid) addressname,
+(select (select name from t_area where id=areaid)
+from t_address where id=addressid) adrename
+from t_owners 
+--32.分页查询台账表T_ACCOUNT，每页10条记录
+select rownum,t.* from t_account t where rownum<=10
+--33.分页查询台账表T_ACCOUNT，每页10条记录，按使用字数降序排序
+select * from t_account order by usenum desc
+select * from
+(select rownum r,t.* from (select * from t_account order by usenum desc) t
+where rownum<=20)
+where r>10
+--34.分页查询台账表T_ACCOUNT，显示第 11 条到第 20 条的记录
+select * from (select rownum r,t.* from t_account t where rownum<=20) where r>10
+
+
+======================上机任务=================================
+--1.统计某日的收费，按区域分组汇总
+select (select name from t_area where id=areaid) 区域,
+sum(usenum)/1000 "用水量(吨)" ,sum(money)
+from t_account
+where to_char(feedate,'yyyy-mm-dd')='2012-05-14'
+group by areaid
+   
+--2.统计某收费员某日的收费，按区域分组汇总
+select (select name from t_area where id=areaid) 区域,
+sum(usenum)/1000 "用水量(吨)" ,sum(money) 金额
+from t_account
+where to_char(feedate, 'yyyy-mm-dd')='2012-05-14'
+and feeuser=2
+group by areaid
+
+--3.统计某年某月的收费记录，按区域分组汇总
+select (select name from t_area where id=areaid) 区域,
+sum(usenum)/1000 "用水量(吨)" , sum(money) 金额
+from t_account 
+where to_char(feedate, 'yyyy-mm')='2012-05'
+group by areaid
+
+--4.统计某收费员某年某月的收费记录，按区域分组汇总
+select (select name from t_area where id=areaid) 区域,
+sum(usenum)/1000 "用水量(吨)" , sum(money) 金额
+from t_account
+where to_char(feedate, 'yyyy-mm')='2012-05' and feeuser = 2
+group by areaid
+
+--5.统计某年收费情况，按区域分组汇总
+select (select name from t_area where id=areaid) 区域,
+sum(usenum)/1000 "用水量(吨)" , sum(money) 金额
+from t_account
+where to_char(feedate, 'yyyy')='2012'
+group by areaid
+
+--6.统计某年收费情况，按月份分组汇总
+select to_char(feedate, 'mm') 月份,
+sum(usenum)/1000 用水量吨数, sum(money) 金额
+from t_account
+where to_char(feedate, 'yyyy')='2013'
+group by to_char(feedate,'mm')
+order by to_char(feedate,'mm')
+
+--7.统计某年收费情况，按月份分组汇总
+select '用水量(吨)' 统计项,
+sum (case when to_char(feedate,'mm')='01' then usenum else 0 end)/1000 一月,
+sum (case when to_char(feedate,'mm')='02' then usenum else 0 end)/1000 二月,
+sum (case when to_char(feedate,'mm')='03' then usenum else 0 end)/1000 三月,
+sum (case when to_char(feedate,'mm')='04' then usenum else 0 end)/1000 四月,
+sum (case when to_char(feedate,'mm')='05' then usenum else 0 end)/1000 五月,
+sum (case when to_char(feedate,'mm')='06' then usenum else 0 end)/1000 六月,
+sum (case when to_char(feedate,'mm')='07' then usenum else 0 end)/1000 七月,
+sum (case when to_char(feedate,'mm')='08' then usenum else 0 end)/1000 八月,
+sum (case when to_char(feedate,'mm')='09' then usenum else 0 end)/1000 九月,
+sum (case when to_char(feedate,'mm')='10' then usenum else 0 end)/1000 十月,
+sum (case when to_char(feedate,'mm')='11' then usenum else 0 end)/1000 十一月,
+sum (case when to_char(feedate,'mm')='12' then usenum else 0 end)/1000 十二月
+
+from t_account
+where to_char(feedate, 'yyyy')='2013' union all
+
+select '金额(元)' 统计项,
+sum (case when to_char(feedate,'mm')='01' then money else 0 end) 一月,
+sum (case when to_char(feedate,'mm')='02' then money else 0 end) 二月,
+sum (case when to_char(feedate,'mm')='03' then money else 0 end) 三月,
+sum (case when to_char(feedate,'mm')='04' then money else 0 end) 四月,
+sum (case when to_char(feedate,'mm')='05' then money else 0 end) 五月,
+sum (case when to_char(feedate,'mm')='06' then money else 0 end) 六月,
+sum (case when to_char(feedate,'mm')='07' then money else 0 end) 七月,
+sum (case when to_char(feedate,'mm')='08' then money else 0 end) 八月,
+sum (case when to_char(feedate,'mm')='09' then money else 0 end) 九月,
+sum (case when to_char(feedate,'mm')='10' then money else 0 end) 十月,
+sum (case when to_char(feedate,'mm')='11' then money else 0 end) 十一月,
+sum (case when to_char(feedate,'mm')='12' then money else 0 end) 十二月
+
+from t_account
+where to_char(feedate, 'yyyy')='2013'
+
+--8.根据业主类型分别统计每种居民的用水量（整数，四舍五入）及收费金额 ，如果该类型在台账表中无数据也需要列出值为0的记录 
+select o.name,
+nvl(round(sum(usenum))/1000,0) "用水量(吨)",
+nvl(sum(money),0) 金额
+from t_ownertype o,t_account a
+where o.id=a.ownertype(+)
+group by o.name
+
+--9.统计每个区域的业主户数，并列出合计
+select a.name 区域,count(o.id) 业主户数
+from t_area a,t_owners o,t_address ad
+where ad.id=o.addressid and ad.areaid=a.id
+group by a.name
+union all
+select '合计',count(1) from t_owners 
+
+--10.统计每个区域的业主户数，如果该区域没有业主户数也要列出0
+select a.name 区域,count(ow.id) 业主户数
+from t_area a,(
+     select o.id,o.name,ad.areaid from t_owners o,t_address ad 
+     where o.addressid=ad.id
+) ow
+where a.id = ow.areaid(+)
+group by a.name
+
+============================拓展练习==============================
+
+--1.请从表EMP中查找工种是职员CLERK或经理MANAGER的雇员姓名、工资。
+select ename,sal from emp where job='CLERK' or job='MANAGER'
+
+--2.请在EMP表中查找部门号在10－30之间的雇员的姓名、部门号、工资、工作。
+select ename,deptno,sal,job from emp where deptno between 10 and 30
+
+--3.请从表EMP中查找姓名以J开头所有雇员的姓名、工资、职位。
+select ename,sal,job from emp where ename like 'J%'
+
+--4.请从表EMP中查找工资低于2000的雇员的姓名、工作、工资，并按工资降序排列。
+select ename,job,sal from emp where sal<=2000 order by sal desc
+
+--5.请从表中查询工作是CLERK的所有人的姓名、工资、部门号、部门名称以及部门地址的信息。
+select e.ename,e.sal,e.deptno,d.dname,d.loc 
+from emp e,dept d
+where e.deptno=d.deptno and job='CLERK'
+
+--6.在表EMP中查询所有工资高于JONES的所有雇员姓名、工作和工资。
+select ename,sal,job from emp where sal > 
+(select sal from emp where ename='JONES')
+
+--7.列出没有对应部门表信息的所有雇员的姓名、工作以及部门号。
+select ename,sal,deptno from emp where deptno not in
+(select deptno from dept)
+
+--8.查找工资在1000～3000之间的雇员所在部门的所有人员信息
+select * from emp where deptno in 
+(select distinct deptno from emp where sal between 1000 and 3000)
+
+--9.雇员中谁的工资最高。
+select ename from emp where sal=(select max(sal) from emp)
+select ename from (select * from emp order by sal desc) where rownum<=1
+
+--10.查询所有雇员的姓名、SAL与COMM之和。
+select ename,sal+nvl(comm,0) "sal-and-comm" from emp
+
+--11.查询所有81年7月1日以前来的员工姓名、工资、所属部门的名字
+select e.ename,e.sal,d.dname
+from emp e,dept d
+where e.deptno=d.deptno and hiredate <= to_date('1981-07-01','yyyy-mm-dd')  
+
+--12.查询各部门中81年1月1日以后来的员工数
+select deptno,count(*) from emp where
+hiredate >= to_date('1981-01-01','yyyy-mm-dd')
+group by deptno  
+
+--13.查询所有在CHICAGO工作的经理MANAGER和销售员SALESMAN的姓名、工资
+select ename,sal from emp where job='CLERK' or job='MANAGER' and deptno in
+(select deptno from dept where loc='CHICAGO')
+
+--14.查询列出来公司就职时间超过24年的员工名单
+select ename from emp where hiredate<=add_months(sysdate,-288)
+
+--15.查询于81年来公司所有员工的总收入（SAL和COMM）
+select sum(sal+nvl(comm,0)) from emp where to_char(hiredate,'yyyy')='1981'
+
+
+--16.查询显示每个雇员加入公司的准确时间，按××××年××月××日 时分秒显示。
+select ename,to_char(hiredate,'yyyy-mm-dd hh:mi:ss') from emp 
+
+--17.查询公司中按年份月份统计各地的录用职工数量
+select to_char(hiredate,'yyyy-mm'),loc,count(*) from emp e,dept d
+where e.deptno=d.deptno group by to_char(hiredate,'yyyy-mm'),loc
+
+--18.查询列出各部门的部门名和部门经理名字
+select dname,ename from emp e,dept d
+where e.deptno=d.deptno and job='MANAGER'
+
+--19.查询部门平均工资最高的部门名称和最低的部门名称
+--1.查询部门的平均工资
+select deptno,avg(sal) from emp group by deptno order by avg(sal) desc
+--2.最高的部门和最低的部门
+select deptno from (select deptno,avg(sal) from emp group by deptno order by avg(sal)) where rownum=1
+union all
+select deptno from (select deptno,avg(sal) from emp group by deptno order by avg(sal) desc) where rownum=1
+--3.部门名称
+select d.dname from dept d,
+(select deptno from 
+(select deptno,avg(sal) from emp group by deptno order by avg(sal)) where rownum=1) t 
+where d.deptno=t.deptno
+union all
+select d.dname from dept d,
+(select deptno from (select deptno,avg(sal) from emp group by deptno order by avg(sal) desc) where rownum=1) t
+where d.deptno=t.deptno
+
+--20.查询与雇员号为7521员工的最接近的在其后进入公司的员工姓名及其所在部门名
+--1.查询与雇员号为7521员工
+select hiredate from emp where empno=7521
+--2.在其后进入公司的员工 
+select ename,deptno,hiredate from emp where hiredate > (select hiredate from emp where empno=7521) 
+--3.最接近的
+select ename,deptno 
+from (select ename,deptno from emp where hiredate > (select hiredate from emp where empno=7521) order by hiredate)
+where rownum=1
+--4.姓名及其所在部门名
+select t.ename,d.dname 
+from dept d,
+(select ename,deptno 
+from (select ename,deptno from emp where hiredate > (select hiredate from emp where empno=7521) order by hiredate)
+where rownum=1) t
+where t.deptno=d.deptno
+
