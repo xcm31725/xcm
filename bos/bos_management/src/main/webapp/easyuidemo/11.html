@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>datagrid行录入</title>
+		<script type="text/javascript" src="../js/jquery-1.8.3.js" ></script>
+		<script type="text/javascript" src="../js/easyui/jquery.easyui.min.js" ></script>
+		<script type="text/javascript" src="../js/easyui/locale/easyui-lang-zh_CN.js" ></script>
+		<link rel="stylesheet" href="../js/easyui/themes/default/easyui.css" />
+		<link rel="stylesheet" href="../js/easyui/themes/icon.css" />
+		
+		<script type="text/javascript">
+			$(function(){
+				// 页面加载后，对datagrid 进行设置
+				$("#grid").datagrid({
+					// 设置表格一些属性 
+					columns : [[
+						{
+							field: "id",
+							title: "编号",
+							width: 100,
+							editor : {
+								type : 'validatebox',
+								options : {
+									required : true
+								}
+							}
+						},
+						{
+							field: "name",
+							title: "名称",
+							width: 200 ,
+							editor : {
+								type : 'validatebox',
+								options : {
+									required : true
+								}
+							}
+						},
+						{
+							field: "price",
+							title: "价格",
+							width: 200,
+							editor : {
+								type : 'validatebox',
+								options : {
+									required : true
+								}
+							}
+						}
+					]],
+					
+					toolbar : [
+						{
+							id : "add",
+							text : "添加",
+							iconCls : "icon-add",
+							handler : function(){
+								if (totalIndex != undefined) {
+									//正在编辑
+									return;
+								} 
+								//插入一行新的数据到新行
+								$("#grid").datagrid("insertRow",{
+									index : 0,
+									row : {} //空对象
+								});
+								
+								//开启编辑状态
+								$("#grid").datagrid("beginEeit",0);
+								
+								//保存全局变量
+								totalIndex = 0;
+							}
+						},
+						{
+							id : "edit",
+							text : "编辑",
+							iconCls : "icon-edit",
+							handler : function(){
+								if (totalIndex != undefined) {
+									//正在编辑
+									return;
+								} 
+								//获取选到的行
+								var row = $("#grid").datagrid("getSelected");
+								var index = $("#grid").datagrid("getRowIndex", row);
+								
+								$("#grid").datagrid("beginEdit",index);
+								totalIndex = index;
+							}
+						},
+						{
+							id : "save",
+							text : "保存",
+							iconCls : "icon-save",
+							handler : function(){
+								//保存编辑效果
+								$("#grid").datagrid("endEdit",totalIndex);
+							}
+						},
+						{
+							id : "cancel",
+							text : "取消",
+							iconCls : "icon-cancel",
+							handler : function(){
+								//取消编辑效果
+								$("#grid").datagrid("cancelEdit",totalIndex);
+							}
+						}
+					],
+					url : 'product.json',
+					singleSelect : true,
+					onAfterEdit : function(rowIndex, rowData, changes){
+						// 当保存成功后 才会触发 
+						totalIndex = undefined;
+					},
+					onCancelEdit : function(rowIndex, rowData){
+						totalIndex = undefined;
+					}
+				});
+				var totalIndex;
+			});
+		</script>
+	</head>
+	<body>
+		<div id="grid"></div>
+	</body>
+</html>
